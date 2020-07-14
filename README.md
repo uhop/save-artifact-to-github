@@ -4,10 +4,11 @@
 [npm-url]: https://npmjs.org/package/save-artifact-to-github
 
 This is a no-dependency micro helper for developers of binary addons for Node.
-It is integrated with [GitHub](https://github.com/) facilities and solves two problems:
+It is companion project is `save-artifact-to-github`.
+These two projects are integrated with [GitHub](https://github.com/) facilities and solve two problems:
 
-* It can save a binary artifact according to platform, architecture, and Node ABI.
-* It can retrieve such artifact, test if it works properly, and rebuild a project from sources in the case of failure.
+* `save-artifact-to-github` saves a binary artifact according to platform, architecture, and Node ABI.
+* `install-artifact-from-github` retrieves such artifact, tests if it works properly, and rebuilds a project from sources in the case of failure.
 
 In general it can save your users from a long recompilation and, in some cases, even save them from installing build tools.
 By using GitHub facilities (Releases and Actions) the whole process of publishing and subsequent installations is secure and transparent.
@@ -33,16 +34,7 @@ In your `package.json` (pseudo-code with comments):
     // ...
 
     // creates an artifact
-    "create-binary-asset": "create-binary-asset.js --artifact build/Release/ABC.node",
-
-    // installs using pre-created artifacts
-    "install": "install-from-cache.js --artifact build/Release/ABC.node",
-
-    // used by "install" to test the artifact
-    "verify-build": "node scripts/verify-build.js"
-
-    // used by "install" to rebuild from sources
-    "rebuild": "node-gyp rebuild"
+    "save-to-github": "save-to-github --artifact build/Release/ABC.node",
   }
 }
 ```
