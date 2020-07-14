@@ -1,0 +1,36 @@
+{
+  "name": "github-cached-assets",
+  "version": "1.0.0",
+  "description": "Create binary artifacts hosted by github and install from them without compiling.",
+  "homepage": "http://github.com/uhop/github-cached-assets",
+  "bugs": "http://github.com/uhop/github-cached-assets/issues",
+  "github": "http://github.com/uhop/github-cached-assets",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/uhop/github-cached-assets.git"
+  },
+  "files": [
+    "/*.js",
+    "/bin",
+    "/src",
+    "/utils"
+  ],
+  "bin": {
+    "install-from-cache": "/bin/install-from-cache.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node addon",
+    "node addons",
+    "github",
+    "github action",
+    "github action"
+  ],
+  "author": "Eugene Lazutkin <eugene.lazutkin@gmail.com> (http://lazutkin.com/)",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@actions/github": "^4.0.0"
+  }
+}
