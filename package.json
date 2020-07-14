@@ -16,7 +16,7 @@
     "/utils"
   ],
   "bin": {
-    "install-from-cache": "/bin/install-from-cache.js"
+    "save-to-github": "/bin/save-to-github.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
