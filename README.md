@@ -3,15 +3,17 @@
 [npm-img]: https://img.shields.io/npm/v/save-artifact-to-github.svg
 [npm-url]: https://npmjs.org/package/save-artifact-to-github
 
-This is a no-dependency micro helper for developers of binary addons for Node.
-It is companion project is `save-artifact-to-github`.
+This is a minimal-dependency micro helper for developers of binary addons for Node.
+It is companion project is `install-artifact-from-github`.
 These two projects are integrated with [GitHub](https://github.com/) facilities and solve two problems:
 
 * `save-artifact-to-github` saves a binary artifact according to platform, architecture, and Node ABI.
 * `install-artifact-from-github` retrieves such artifact, tests if it works properly, and rebuilds a project from sources in the case of failure.
 
 In general it can save your users from a long recompilation and, in some cases, even save them from installing build tools.
-By using GitHub facilities (Releases and Actions) the whole process of publishing and subsequent installations is secure and transparent.
+By using GitHub facilities ([Releases](https://docs.github.com/en/github/administering-a-repository/about-releases)
+and [Actions](https://github.com/features/actions)) the whole process of publishing and subsequent installations is secure,
+transparent, inexpensive or even free for public repositories.
 
 ## How to install
 
@@ -39,7 +41,87 @@ In your `package.json` (pseudo-code with comments):
 }
 ```
 
-Now we have to enable GitHub actions on the project.
+Let's assume that our workflow is like that:
+
+* Development with multiple commits, tests, rinse, repeat.
+* When we are ready to release we tag using a [semantic versioning](https://semver.org/), e.g., `2.0.1`.
+* Now is the good time to build and save artifacts.
+* Then we publish our package on [npm](https://www.npmjs.com/), [GitHub Packages](https://github.com/features/packages),
+  or any other repository of your choice.
+
+Now we have to enable GitHub actions on the project to automate our builds.
+Create a file (e.g., `build.yml`) in `.github/workflows` folder with the following content:
+
+```yml
+name: Node.js builds
+
+on:
+  push:
+    tags:
+      - v?[0-9]+.[0-9]+.[0-9]+.[0-9]+
+      - v?[0-9]+.[0-9]+.[0-9]+
+      - v?[0-9]+.[0-9]+
+
+jobs:
+  create-release:
+    name: Create release
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Create release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        tag_name: ${{github.ref}}
+        release_name: Release ${{github.ref}}
+        draft: false
+        prerelease: false
+
+  build:
+    name: Node.js ${{matrix.node-version}} on ${{matrix.os}}
+    needs: create-release
+    runs-on: ${{matrix.os}}
+
+    strategy:
+      matrix:
+        os: [windows-latest, macOS-latest, ubuntu-latest]
+        node-version: [10, 12, 14]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Setup Node.js ${{matrix.node-version}}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{matrix.node-version}}
+    - name: Get NPM cache directory
+      id: npm-cache
+      run: |
+        echo "::set-output name=dir::$(npm config get cache)"
+    - name: Cache node modules
+      uses: actions/cache@v2
+      with:
+        path: ${{steps.npm-cache.outputs.dir}}
+        key: ${{runner.os}}-node-${{hashFiles('**/package-lock.json')}}
+        restore-keys: |
+          ${{runner.os}}-node-
+          ${{runner.os}}-
+    - name: Install the package and run tests
+      env:
+        DEVELOPMENT_SKIP_GETTING_ASSET: true
+      run: |
+        npm ci
+        npm run build --if-present
+        npm test
+    - name: Save to GitHub release
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      run: npm run save-to-github
+```
+
+It will build and save 9 artifacts on all permutations of Windows/MacOS/Ubuntu for Node 10/12/14.
 
 ## Release history
 
