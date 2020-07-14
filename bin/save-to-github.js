@@ -86,6 +86,6 @@ const main = async () => {
 };
 
 main().catch(e => {
-  console.log('::error::' + ((e && e.message) || 'create-binary-asset has failed'));
+  console.log('::error::' + ((e && e.message) || 'save-to-github has failed'));
   process.exit(1);
 });
