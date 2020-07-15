@@ -1,6 +1,6 @@
 {
   "name": "save-artifact-to-github",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create binary artifacts hosted by github and install from them without compiling.",
   "homepage": "http://github.com/uhop/save-artifact-to-github",
   "bugs": "http://github.com/uhop/save-artifact-to-github/issues",
@@ -16,7 +16,7 @@
     "/utils"
   ],
   "bin": {
-    "save-to-github": "/bin/save-to-github.js"
+    "save-to-github": "./bin/save-to-github.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
