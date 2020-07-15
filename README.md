@@ -49,7 +49,7 @@ Let's assume that our workflow is like that:
 * Then we publish our package on [npm](https://www.npmjs.com/), [GitHub Packages](https://github.com/features/packages),
   or any other repository of your choice.
 
-Now we have to enable GitHub actions on the project to automate our builds.
+Let's enable GitHub actions on the project to automate our builds on tagging.
 Create a file (e.g., `build.yml`) in `.github/workflows` folder with the following content:
 
 ```yml
@@ -122,6 +122,48 @@ jobs:
 ```
 
 It will build and save 9 artifacts on all permutations of Windows/MacOS/Ubuntu for Node 10/12/14.
+
+### Environment variables
+
+The project doesn't use any user-settable environment variables, but
+it is meant to be run using a GitHub action. It relies on
+[GitHub action's environment variables](https://docs.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables)
+for security and information on a repository and a tag.
+
+### Command-line parameters
+
+* `--artifact path` &mdash; points where to take the artifact from. It is a required parameter.
+* `--prefix prefix` &mdash; provides a prefix for the generated artifact name. Default: `''`.
+* `--suffix suffix` &mdash; provides a suffix for the generated artifact name. Default: `''`.
+
+Ultimately, the file name has the following format:
+
+```js
+`${prefix}${platform}-${arch}-${abi}${suffix}.${compression}`
+```
+
+Where:
+
+* `platform` is [process.platform](https://nodejs.org/api/process.html#process_process_platform).
+  * Because Linux has different implementations of the C standard library, a special case is made for
+    [musl](https://musl.libc.org/) used by such popular distributions like [Alpine](https://alpinelinux.org/).
+    Such platforms has a code `linux-musl`.
+* `arch` is [process.arch](https://nodejs.org/api/process.html#process_process_arch).
+* `abi` is [process.versions.modules](https://nodejs.org/api/process.html#process_process_versions).
+* `compression` can be `br` (if available on the platform) or `gz`.
+
+Example with default values: `linux-x64-83.br`.
+
+## Documentation
+
+The additional documentation is available in the [wiki](https://github.com/uhop/save-artifact-to-github/wiki).
+
+### Example
+
+The realistic complex example can be found in [uhop/node-re2](https://github.com/uhop/node-re2):
+
+* [package.json](https://github.com/uhop/node-re2/blob/master/package.json) sets it up.
+* [builds.yaml](https://github.com/uhop/node-re2/blob/master/.github/workflows/build.yml) implements a complex workflow.
 
 ## Release history
 
