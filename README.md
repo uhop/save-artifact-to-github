@@ -3,6 +3,8 @@
 [npm-img]: https://img.shields.io/npm/v/save-artifact-to-github.svg
 [npm-url]: https://npmjs.org/package/save-artifact-to-github
 
+**Deprecation notice: as of 10/15/2020 the development was moved to [install-artifact-from-github](https://github.com/uhop/install-artifact-from-github)**
+
 This is a minimal-dependency micro helper for developers of binary addons for Node.
 It is a companion project for `install-artifact-from-github`.
 These two projects are integrated with [GitHub](https://github.com/) facilities and solve two problems:
@@ -167,5 +169,6 @@ The realistic complex example can be found in [uhop/node-re2](https://github.com
 
 ## Release history
 
+- 1.0.2 *technical release: depriced, moved to [install-artifact-from-github](https://github.com/uhop/install-artifact-from-github).*
 - 1.0.1 *fixed a `yarn`-specific bug.*
 - 1.0.0 *initial release (extracted from [node-re2](https://github.com/uhop/node-re2)).*
